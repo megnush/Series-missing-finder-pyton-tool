@@ -6,13 +6,13 @@
 #To use this tool, please contact ©IndianGPT at https://www.linkedin.com/in/megnush/.
 
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, ttk
 
 app = tk.Tk()
+# Set the icon of the menu
+#app.iconbitmap('logo.ico')
 app.title("Missing Series Finder")
 app.geometry("300x200") # Set the size of the window
-# Set the icon of the menu
-app.iconbitmap('icon.ico')
 
 def process_and_export():
     input_file_path = filedialog.askopenfilename(defaultextension='.txt', filetypes=[('Text Files', '*.txt'), ('All Files', '*.*')], title='Select Input File')
@@ -31,58 +31,46 @@ def process_and_export():
         if gap > 0:
             missing_series_list.append((numbers[i], numbers[i] + 1, numbers[i + 1] - 1, gap))
 
-    output_file_path = filedialog.asksaveasfilename(defaultextension='.txt', filetypes=[('Text Files', '*.txt'), ('All Files', '*.*')], title='Save Output File (Summary)')
+    output_file_path = filedialog.asksaveasfilename(defaultextension='.txt', filetypes=[('Text Files', '*.txt'), ('All Files', '*.*')], title='Save Output File')
     if not output_file_path:
         return
 
     with open(output_file_path, 'w') as file:
-        file.write("Start Series, From, To, Count, Remarks\n")
-        for start_series, start, end, count in missing_series_list:
-            if count <= 14:
-                file.write(f"{start_series}, {start}, {end}, {count}, Found in Whitelist\n")
+        file.write("Start Series, From, To, Count\n")
+        for i, (start_series, start, _, _) in enumerate(missing_series_list):
+            if i + 1 < len(missing_series_list):
+                to = missing_series_list[i + 1][0] - 1
+            else:
+                to = start + missing_series_list[i][3] - 1
+            count = to - start + 1
+            file.write(f"{start_series}, {start}, {to}, {count}\n")
 
-    all_missing_series_file_path = filedialog.asksaveasfilename(defaultextension='.txt', filetypes=[('Text Files', '*.txt'), ('All Files', '*.*')], title='Save Output File (All Missing Series)')
-    if not all_missing_series_file_path:
+    output_file_path2 = filedialog.asksaveasfilename(defaultextension='.txt', filetypes=[('Text Files', '*.txt'), ('All Files', '*.*')], title='Save Second Output File')
+    if not output_file_path2:
         return
 
-    with open(all_missing_series_file_path, 'w') as file:
-        file.write("Start Series, From, To, Count, Remarks\n")
-        for start_series, start, end, count in missing_series_list:
-            file.write(f"{start_series}, {start}, {end}, {count}, Found in Whitelist\n")
-
-    missing_series_file_path = filedialog.asksaveasfilename(defaultextension='.txt', filetypes=[('Text Files', '*.txt'), ('All Files', '*.*')], title='Save Output File (Missing Series)')
-    if not missing_series_file_path:
-        return
-
-    with open(missing_series_file_path, 'w') as file:
-        file.write("Series, Remarks\n")
-        for start_series, start, end, count in missing_series_list:
-            if count <= 12:
-                for i in range(start, end + 1):
-                    file.write(f"{i}, Not found in whitelist\n")
-
-    found_series_file_path = filedialog.asksaveasfilename(defaultextension='.txt', filetypes=[('Text Files', '*.txt'), ('All Files', '*.*')], title='Save Output File (Found Series)')
-    if not found_series_file_path:
-        return
-
-    with open(found_series_file_path, 'w') as file:
-        file.write("Series, Remarks\n")
-        for number in numbers:
-            file.write(f"{number}, Found in whitelist\n")
+    with open(output_file_path2, 'w') as file:
+        file.write("Missing Series, Remarks\n")
+        for start_series, start, to, count in missing_series_list:
+            if count <= 6:
+                for missing_number in range(start, to + 1):
+                    file.write(f"{missing_number}, Not found in Whitelist\n")
 
 def open_linkedin(event):
     webbrowser.open_new(r"https://www.linkedin.com/in/megnush/")
 
 
+
 process_export_button = tk.Button(app, text='Process and Export', command=process_and_export)
 process_export_button.pack(pady=10)
+
 
 copyright_label = tk.Label(app, text="Copyright 2023")
 link_label = tk.Label(app, text="©IndianGPT", fg="Green", cursor="hand2")
 link_label.bind("<Button-1>", open_linkedin)
 link_label.pack(side="bottom")
 copyright_label.pack(side="bottom")
-process_export_button.pack(side="top")
+
 
 
 # Packing the labels
