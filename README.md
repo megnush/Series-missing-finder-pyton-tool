@@ -32,6 +32,6 @@ Example output file content (second output file):
 Missing Series, Remarks
 2150150031, Not found in Whitelist
 2150150032, Not found in Whitelist
-The application also has a menu option to open a second window. Click on the "Help" menu and select "Open Second Window" to open the second window. You can customize this second window according to your requirements.
+The application also has a menu option to open a second window. Click on the "Help" menu and select "Open Second Window" to open the second window.
 
 By following these steps, you can process an input file containing an existing series and generate two output files. The first output file will show the missing series ranges and their counts, while the second output file will list the missing series with a count less than or equal to 12 and a remark "Not found in Whitelist".
