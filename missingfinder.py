@@ -7,6 +7,7 @@
 
 import tkinter as tk
 from tkinter import filedialog, ttk
+import webbrowser
 
 app = tk.Tk()
 # Set the icon of the menu
@@ -26,6 +27,9 @@ def open_second_window():
         "A file dialog will open, asking you to select an input file. "
         "The input file should be a text file containing one integer per line."
         "These integers represent the existing series available."
+        "Try with only .txt file and output file will be .txt"
+        "Incase of any new addition or query please visit linkedin and send message."
+        "Total Four .txt output report wil come, save it one by one."
     )
 
     guide_label = tk.Label(second_window, text=guide_text, wraplength=250, justify="left")
@@ -84,22 +88,52 @@ def process_and_export():
                 for missing_number in range(start, to + 1):
                     file.write(f"{missing_number}, Not found in Whitelist\n")
 
+    combined_series_list = []
+    for start_series, start, _, _ in missing_series_list:
+        combined_series_list.append((start_series, "Found in Whitelist"))
+    for start_series, start, to, count in missing_series_list:
+        if count <= 6:
+            for missing_number in range(start, to + 1):
+                combined_series_list.append((missing_number, "Not found in Whitelist"))
+
+    combined_series_list.sort(key=lambda x: x[0])
+
+    output_file_path3 = filedialog.asksaveasfilename(defaultextension='.txt', filetypes=[('Text Files', '*.txt'), ('All Files', '*.*')], title='Save Third Output File')
+    if not output_file_path3:
+        return
+
+    with open(output_file_path3, 'w') as file:
+        file.write("Series, Remarks\n")
+        for series, remarks in combined_series_list:
+            file.write(f"{series}, {remarks}\n")
+            
+    output_file_path4 = filedialog.asksaveasfilename(defaultextension='.txt', filetypes=[('Text Files', '*.txt'), ('All Files', '*.*')], title='Save Fourth Output File')
+    if not output_file_path4:
+        return
+
+    with open(output_file_path4, 'w') as file:
+        file.write("Start Series, From, To, Count\n")
+        for start_series, start, _, count in missing_series_list:
+            if count <= 6:
+                if i + 1 < len(missing_series_list):
+                    to = missing_series_list[i + 1][0] - 1
+                else:
+                    to = start + count - 1
+                file.write(f"{start_series}, {start}, {to}, {count}\n")
+            
+
+
 def open_linkedin(event):
     webbrowser.open_new(r"https://www.linkedin.com/in/megnush/")
-
-
 
 process_export_button = tk.Button(app, text='Process and Export', command=process_and_export)
 process_export_button.pack(pady=10)
 
-
-copyright_label = tk.Label(app, text="Copyright 2023 | Version V.01")
+copyright_label = tk.Label(app, text="Copyright 2023 | Version V-0.1")
 link_label = tk.Label(app, text="©IndianGPT", fg="Green", cursor="hand2")
 link_label.bind("<Button-1>", open_linkedin)
 link_label.pack(side="bottom")
 copyright_label.pack(side="bottom")
-
-
 
 # Packing the labels
 copyright_label.pack()
