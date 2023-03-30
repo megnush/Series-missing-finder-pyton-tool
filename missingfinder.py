@@ -12,7 +12,35 @@ app = tk.Tk()
 # Set the icon of the menu
 #app.iconbitmap('logo.ico')
 app.title("Missing Series Finder")
-app.geometry("300x200") # Set the size of the window
+app.geometry("500x200") # Set the size of the window
+
+def open_second_window():
+    second_window = tk.Toplevel(app)
+    second_window.title("Second Window")
+    second_window.geometry("500x200")
+    tk.Label(second_window, text="Guide for User").pack(pady=10)
+    guide_text = (
+        "Run the Missing Series Finder application."
+        "You will see a window with a 'Process and Export' button. "
+        "Click the 'Process and Export' button."
+        "A file dialog will open, asking you to select an input file. "
+        "The input file should be a text file containing one integer per line."
+        "These integers represent the existing series available."
+    )
+
+    guide_label = tk.Label(second_window, text=guide_text, wraplength=250, justify="left")
+    guide_label.pack(pady=10)
+
+# Create a menu bar
+menu_bar = tk.Menu(app)
+app.config(menu=menu_bar)
+
+# Create a 'Windows' menu
+windows_menu = tk.Menu(menu_bar, tearoff=0)
+menu_bar.add_cascade(label="Guide", menu=windows_menu)
+
+# Add a command to open the second window
+windows_menu.add_command(label="Open Second Window", command=open_second_window)
 
 def process_and_export():
     input_file_path = filedialog.askopenfilename(defaultextension='.txt', filetypes=[('Text Files', '*.txt'), ('All Files', '*.*')], title='Select Input File')
@@ -65,7 +93,7 @@ process_export_button = tk.Button(app, text='Process and Export', command=proces
 process_export_button.pack(pady=10)
 
 
-copyright_label = tk.Label(app, text="Copyright 2023")
+copyright_label = tk.Label(app, text="Copyright 2023 | Version V.01")
 link_label = tk.Label(app, text="©IndianGPT", fg="Green", cursor="hand2")
 link_label.bind("<Button-1>", open_linkedin)
 link_label.pack(side="bottom")
